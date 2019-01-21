@@ -41,7 +41,7 @@ public class RowControllerAPITest {
         final Row row = Row.builder().pinsHit(10).frame(frame).build();
         given(rowRepository.save(row)).willReturn(row);
 
-        final String jsonRequest = "{ \"rowId\": \"1\", \"pinsHit\": \"10\" }";
+        final String jsonRequest = "{ \"gameId\": \"1\", \"pinsHit\": \"10\" }";
 
         mockMvc.perform(post("/rows")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)

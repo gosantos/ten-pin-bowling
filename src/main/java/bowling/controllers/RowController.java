@@ -25,7 +25,7 @@ public class RowController {
     @PostMapping(value = "/rows")
     public Row save(@RequestBody final RowRequest rowRequest) throws Exception {
         return frameRepository
-                .findById(rowRequest.getRowId())
+                .findById(rowRequest.getGameId())
                 .map(frame -> rowRepository.save(Row.builder().pinsHit(10).frame(frame).build()))
                 .orElseThrow(Exception::new);
     }

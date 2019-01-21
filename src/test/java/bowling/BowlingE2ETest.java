@@ -25,7 +25,7 @@ public class BowlingE2ETest {
 
     @Test
     public void rowEndpoint() {
-        final String jsonRequest = "{ \"rowId\": \"3296288679181027561\", \"pinsHit\": \"10\" }";
+        final String jsonRequest = "{ \"gameId\": \"3296288679181027561\", \"pinsHit\": \"10\" }";
 
         given()
             .header("Content-Type", "application/json")

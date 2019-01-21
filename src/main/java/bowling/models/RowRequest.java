@@ -4,6 +4,6 @@ import lombok.Value;
 
 @Value
 public class RowRequest {
-    private Long rowId;
+    private Long gameId;
     private Integer pinsHit;
 }
