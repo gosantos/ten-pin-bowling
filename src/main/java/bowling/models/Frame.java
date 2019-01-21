@@ -1,5 +1,6 @@
 package bowling.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,8 +10,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -28,6 +30,11 @@ public class Frame {
 
     @OneToMany(mappedBy = "frame")
     private Set<Row> rows;
+
+    @ManyToOne
+    @JoinColumn(name="game_id")
+    @JsonIgnore
+    private Game game;
 
     public boolean isStrike() {
         return rows.stream().findFirst().map(row -> row.getPinsHit().equals(TEN)).orElse(false);
