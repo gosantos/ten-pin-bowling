@@ -10,16 +10,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class RowController {
+public class BowlingController {
     private RowRepository rowRepository;
 
     private FrameRepository frameRepository;
 
     @Autowired
-    public RowController(RowRepository rowRepository, FrameRepository frameRepository) {
+    public BowlingController(RowRepository rowRepository, FrameRepository frameRepository) {
         this.rowRepository = rowRepository;
         this.frameRepository = frameRepository;
-
     }
 
     @PostMapping(value = "/rows")

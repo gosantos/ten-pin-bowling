@@ -2,7 +2,6 @@ package bowling.controllers;
 
 import bowling.models.Frame;
 import bowling.models.Row;
-import bowling.models.RowRequest;
 import bowling.repositories.FrameRepository;
 import bowling.repositories.RowRepository;
 import org.junit.Test;
@@ -21,8 +20,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(controllers = RowController.class)
-public class RowControllerAPITest {
+@WebMvcTest(controllers = BowlingController.class)
+public class BowlingControllerAPITest {
     @Autowired
     private MockMvc mockMvc;
 

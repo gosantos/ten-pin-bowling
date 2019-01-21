@@ -8,7 +8,6 @@ import bowling.repositories.RowRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.springframework.http.ResponseEntity;
 
 import java.util.Optional;
 
@@ -18,9 +17,9 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 
-public class RowControllerTest {
+public class BowlingControllerTest {
 
-    private RowController rowController;
+    private BowlingController bowlingController;
 
     @Mock
     private RowRepository rowRepository;
@@ -31,7 +30,7 @@ public class RowControllerTest {
     @Before
     public void setUp() {
         initMocks(this);
-        rowController = new RowController(rowRepository, frameRepository);
+        bowlingController = new BowlingController(rowRepository, frameRepository);
     }
 
     @Test
@@ -45,7 +44,7 @@ public class RowControllerTest {
         final Row row = Row.builder().pinsHit(10).frame(frame).build();
         given(rowRepository.save(row)).willReturn(row);
 
-        final Row savedRow = rowController.save(rowRequest);
+        final Row savedRow = bowlingController.save(rowRequest);
 
         assertThat(savedRow, is(row));
     }

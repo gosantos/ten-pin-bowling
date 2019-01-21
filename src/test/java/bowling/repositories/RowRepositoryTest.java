@@ -16,7 +16,7 @@ import static org.junit.Assert.assertThat;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
-public class RowRepositoryIntegrationTest {
+public class RowRepositoryTest {
 
     @Autowired
     private RowRepository rowRepository;
