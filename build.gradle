@@ -6,10 +6,12 @@ buildscript {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.5.RELEASE")
     }
 }
-
-plugins {
-    id 'io.franzbecker.gradle-lombok' version '1.8'
-}
+////
+////plugins {
+////    id 'io.franzbecker.gradle-lombok' version '1.8'
+////}
+//
+//annotationProcessor 'org.projectlombok:lombok:1.16.20'
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
@@ -40,5 +42,10 @@ dependencies {
     testCompile('com.h2database:h2')
     testCompile('io.rest-assured:rest-assured:3.0.3')
     testCompile('com.github.tomakehurst:wiremock:2.6.0')
+
+    compileOnly "org.projectlombok:lombok:1.18.2"
+    testCompileOnly "org.projectlombok:lombok:1.18.2"
+    annotationProcessor "org.projectlombok:lombok:1.18.2"
+    testAnnotationProcessor "org.projectlombok:lombok:1.18.2"
 }
 

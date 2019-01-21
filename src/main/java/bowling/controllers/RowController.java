@@ -2,9 +2,9 @@ package bowling.controllers;
 
 import bowling.models.Row;
 import bowling.models.RowRequest;
+import bowling.repositories.FrameRepository;
 import bowling.repositories.RowRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,16 +13,20 @@ import org.springframework.web.bind.annotation.RestController;
 public class RowController {
     private RowRepository rowRepository;
 
+    private FrameRepository frameRepository;
+
     @Autowired
-    public RowController(RowRepository rowRepository) {
+    public RowController(RowRepository rowRepository, FrameRepository frameRepository) {
         this.rowRepository = rowRepository;
+        this.frameRepository = frameRepository;
+
     }
 
     @PostMapping(value = "/rows")
-    public ResponseEntity<Row> save(@RequestBody final RowRequest rowRequest) {
-        final Row row = new Row(rowRequest.getRowId(), rowRequest.getPinsHit());
-        final Row savedRow = rowRepository.save(row);
-
-        return ResponseEntity.ok(savedRow);
+    public Row save(@RequestBody final RowRequest rowRequest) throws Exception {
+        return frameRepository
+                .findById(rowRequest.getRowId())
+                .map(frame -> rowRepository.save(Row.builder().pinsHit(10).frame(frame).build()))
+                .orElseThrow(Exception::new);
     }
 }

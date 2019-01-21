@@ -1,7 +1,6 @@
 package bowling.repositories;
 
 import bowling.models.Frame;
-import bowling.models.Row;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,25 +13,26 @@ import java.util.Optional;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
+
 @RunWith(SpringRunner.class)
 @DataJpaTest
-public class RowRepositoryIntegrationTest {
+public class FrameRepositoryTest {
 
     @Autowired
-    private RowRepository rowRepository;
+    private FrameRepository frameRepository;
 
     @Test
-    public void shouldSaveAndFetchARow() {
-        final Row row = Row.builder().pinsHit(10).build();
-        rowRepository.save(row);
+    public void shouldSaveAndFetchAFrame() {
+        final Frame frame = Frame.builder().build();
+        frameRepository.save(frame);
 
-        final Optional<Row> rowRepositoryById = rowRepository.findById(row.getId());
+        final Optional<Frame> frameRepositoryById = frameRepository.findById(frame.getId());
 
-        assertThat(rowRepositoryById, is(Optional.of(row)));
+        assertThat(frameRepositoryById, is(Optional.of(frame)));
     }
 
     @After
     public void tearDown() {
-        rowRepository.deleteAll();
+        frameRepository.deleteAll();
     }
 }
