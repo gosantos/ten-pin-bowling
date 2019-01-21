@@ -1,7 +1,6 @@
 package bowling.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.common.collect.Iterables;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -30,7 +29,9 @@ import java.util.Collection;
 public class Frame {
     private static final int MAX_PINS = 10;
     private static final int MIN_PINS = 0;
-    private static final int MAX_FRAME_SIZE = 2;
+    private static final int MAX_ROLLS_SIZE = 2;
+    private static final int BONUS_ROLLS_SIZE = 3;
+    private static final int MAX_BONUS_PINS = 30;
 
     @Id
     @GeneratedValue
@@ -57,14 +58,19 @@ public class Frame {
     @AssertTrue
     @JsonIgnore
     boolean isValid() {
-        return sumAllRolls() >= MIN_PINS && sumAllRolls() <= MAX_PINS;
+        return isBonusRoll() || (sumAllRolls() >= MIN_PINS && sumAllRolls() <= MAX_PINS);
     }
 
     private Integer sumAllRolls() {
         return rolls.stream().map(Roll::getPinsHit).reduce(MIN_PINS, Integer::sum);
     }
 
+    @JsonIgnore
+    boolean isBonusRoll() {
+        return isStrike() && (rolls.size() < BONUS_ROLLS_SIZE) && sumAllRolls() <= MAX_BONUS_PINS;
+    }
+
     boolean hasFinished() {
-        return isStrike() || (rolls.size() == MAX_FRAME_SIZE);
+        return isStrike() || (rolls.size() == MAX_ROLLS_SIZE);
     }
 }

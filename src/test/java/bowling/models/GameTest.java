@@ -1,9 +1,9 @@
 package bowling.models;
 
-import com.google.common.collect.Sets;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 import static org.hamcrest.Matchers.is;
@@ -25,7 +25,20 @@ public class GameTest {
     }
 
     @Test
-    public void getLatestFrame2() {
+    public void shouldGetLatestFrameWhenIsABonusRoll() {
+        final Roll roll = Roll.builder().pinsHit(10).build();
+
+        final Game game = Game.builder().frames(new ArrayList<>()).build();
+
+        for (int i = 0; i < MAX_FRAMES; i++) {
+            game.getFrames().add(Frame.builder().id((long) i).rolls(Collections.singletonList(roll)).build());
+        }
+
+        assertThat(game.getLatestFrame().isValid(), is(true));
+    }
+
+    @Test
+    public void getLatestFrameWhenThereIsNoFrame() {
         final Game game = Game.builder().build();
 
         final Frame expectedFrame = Frame.builder().game(game).build();
@@ -37,10 +50,10 @@ public class GameTest {
     public void hasFinished() {
         final Roll roll = Roll.builder().pinsHit(10).build();
 
-        final Game game = Game.builder().frames(Sets.newHashSet()).build();
+        final Game game = Game.builder().frames(new ArrayList<>()).build();
 
         for (int i = 0; i < MAX_FRAMES; i++) {
-            game.getFrames().add(Frame.builder().id((long) i).rolls(Sets.newHashSet(roll)).build());
+            game.getFrames().add(Frame.builder().id((long) i).rolls(Arrays.asList(roll)).build());
         }
 
         assertThat(game.hasFinished(), is(true));
@@ -49,14 +62,15 @@ public class GameTest {
     @Test
     public void hasFinished2() {
         final Roll roll1 = Roll.builder().pinsHit(10).build();
-        final Game game = Game.builder().frames(Sets.newHashSet()).build();
+        final Game game = Game.builder().frames(new ArrayList<>()).build();
 
         for (int i = 0; i < MAX_FRAMES - 1; i++) {
-            game.getFrames().add(Frame.builder().id((long) i).rolls(Sets.newHashSet(roll1)).build());
+            game.getFrames().add(Frame.builder().id((long) i).rolls(Arrays.asList(roll1)).build());
         }
 
         final Roll roll2 = Roll.builder().pinsHit(3).build();
-        final Frame frame2 = Frame.builder().rolls(Sets.newHashSet(roll2)).build();
+        final Roll roll3 = Roll.builder().pinsHit(3).build();
+        final Frame frame2 = Frame.builder().rolls(Arrays.asList(roll2, roll3)).build();
 
         game.getFrames().add(frame2);
 
@@ -90,5 +104,31 @@ public class GameTest {
         game.getFrames().add(frame2);
 
         assertThat(game.hasFinished(), is(false));
+    }
+
+    @Test
+    public void isBonusRoll() {
+        final Roll roll = Roll.builder().pinsHit(10).build();
+
+        final Game game = Game.builder().frames(new ArrayList<>()).build();
+
+        for (int i = 0; i < MAX_FRAMES; i++) {
+            game.getFrames().add(Frame.builder().id((long) i).rolls(Arrays.asList(roll)).build());
+        }
+
+        assertThat(game.isBonusRoll(), is(true));
+    }
+
+    @Test
+    public void isNotABonusRoll() {
+        final Roll roll = Roll.builder().pinsHit(9).build();
+
+        final Game game = Game.builder().frames(new ArrayList<>()).build();
+
+        for (int i = 0; i < MAX_FRAMES; i++) {
+            game.getFrames().add(Frame.builder().id((long) i).rolls(Arrays.asList(roll)).build());
+        }
+
+        assertThat(game.isBonusRoll(), is(false));
     }
 }

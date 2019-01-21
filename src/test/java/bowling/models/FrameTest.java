@@ -107,8 +107,31 @@ public class FrameTest {
         assertThat(frame.isValid(), is(true));
     }
 
+
     @Test
-    public void isNotValid() {
+    public void isValidWhenIsABonusRoll() {
+        final Roll roll1 = Roll.builder().pinsHit(10).build();
+        final Roll roll2 = Roll.builder().pinsHit(10).build();
+        final List<Roll> rolls = Arrays.asList(roll1, roll2);
+        final Frame frame = Frame.builder().rolls(rolls).build();
+
+        assertThat(frame.isValid(), is(true));
+    }
+
+    @Test
+    public void isNotAValidBonusRoll() {
+        final Roll roll1 = Roll.builder().pinsHit(10).build();
+        final Roll roll2 = Roll.builder().pinsHit(10).build();
+        final Roll roll3 = Roll.builder().pinsHit(10).build();
+        final Roll roll4 = Roll.builder().pinsHit(10).build();
+        final List<Roll> rolls = Arrays.asList(roll1, roll2, roll3, roll4);
+        final Frame frame = Frame.builder().rolls(rolls).build();
+
+        assertThat(frame.isValid(), is(false));
+    }
+
+    @Test
+    public void isNotValidWhenPinsAreGreaterThan10AndIsNotABonusRoll() {
         final Roll roll1 = Roll.builder().pinsHit(7).build();
         final Roll roll2 = Roll.builder().pinsHit(7).build();
         final List<Roll> rolls = Arrays.asList(roll1, roll2);

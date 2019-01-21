@@ -36,15 +36,18 @@ public class Game {
 
     @JsonIgnore
     public Frame getLatestFrame() {
-        if (hasFinished()) {
-            return null;
-        }
+        if (hasFinished() && !isBonusRoll()) return null;
 
-        if (!frames.isEmpty() && !Iterables.getLast(frames).hasFinished()) {
+        if (isBonusRoll() || !frames.isEmpty() && !Iterables.getLast(frames).hasFinished()) {
             return Iterables.getLast(frames);
         }
 
         return Frame.builder().game(this).build();
+    }
+
+    @JsonIgnore
+    boolean isBonusRoll() {
+        return frames.size() == MAX_FRAMES && Iterables.getLast(frames).isBonusRoll();
     }
 
     boolean hasFinished() {
