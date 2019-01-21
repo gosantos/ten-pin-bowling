@@ -1,8 +1,10 @@
 package bowling.controllers;
 
 import bowling.models.Frame;
+import bowling.models.Game;
 import bowling.models.Row;
 import bowling.repositories.FrameRepository;
+import bowling.repositories.GameRepository;
 import bowling.repositories.RowRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,6 +31,9 @@ public class BowlingControllerAPITest {
     private RowRepository rowRepository;
 
     @MockBean
+    private GameRepository gameRepository;
+
+    @MockBean
     private FrameRepository frameRepository;
 
     @Test
@@ -45,6 +50,16 @@ public class BowlingControllerAPITest {
         mockMvc.perform(post("/rows")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(jsonRequest))
+                .andExpect(status().is2xxSuccessful());
+    }
+
+    @Test
+    public void shouldReturn2xxWhenNewGameEndpointIsHit() throws Exception {
+        final Game game = Game.builder().build();
+        given(gameRepository.save(game)).willReturn(game);
+
+        mockMvc.perform(post("/new-game")
+                .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().is2xxSuccessful());
     }
 }

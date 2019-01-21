@@ -1,9 +1,11 @@
 package bowling.controllers;
 
 import bowling.models.Frame;
+import bowling.models.Game;
 import bowling.models.Row;
 import bowling.models.RowRequest;
 import bowling.repositories.FrameRepository;
+import bowling.repositories.GameRepository;
 import bowling.repositories.RowRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,10 +29,13 @@ public class BowlingControllerTest {
     @Mock
     private FrameRepository frameRepository;
 
+    @Mock
+    private GameRepository gameRepository;
+
     @Before
     public void setUp() {
         initMocks(this);
-        bowlingController = new BowlingController(rowRepository, frameRepository);
+        bowlingController = new BowlingController(rowRepository, frameRepository, gameRepository);
     }
 
     @Test
@@ -47,5 +52,15 @@ public class BowlingControllerTest {
         final Row savedRow = bowlingController.save(rowRequest);
 
         assertThat(savedRow, is(row));
+    }
+
+    @Test
+    public void shouldCreateANewGame() {
+        final Game expectedNewGame = Game.builder().build();
+        given(gameRepository.save(expectedNewGame)).willReturn(expectedNewGame);
+
+        final Game actualNewGame = bowlingController.newGame();
+
+        assertThat(actualNewGame, is(expectedNewGame));
     }
 }

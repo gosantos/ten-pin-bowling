@@ -1,5 +1,7 @@
 package bowling;
 
+import bowling.repositories.FrameRepository;
+import bowling.repositories.GameRepository;
 import bowling.repositories.RowRepository;
 import org.junit.After;
 import org.junit.Test;
@@ -20,6 +22,12 @@ public class BowlingE2ETest {
     @Autowired
     private RowRepository rowRepository;
 
+    @Autowired
+    private FrameRepository frameRepository;
+
+    @Autowired
+    private GameRepository gameRepository;
+
     @LocalServerPort
     private int port;
 
@@ -37,9 +45,21 @@ public class BowlingE2ETest {
             .body("id", equalTo(1), "pinsHit", equalTo(10));
     }
 
+    @Test
+    public void shouldReturn2xxWhenNewGameEndpointIsHit() {
+        given()
+                .header("Content-Type", "application/json")
+        .when()
+                .post(getUrl("new-game"))
+        .then()
+                .statusCode(is(200));
+    }
+
     @After
     public void tearDown() {
         rowRepository.deleteAll();
+        frameRepository.deleteAll();
+        gameRepository.deleteAll();
     }
 
     private String getUrl(String endpoint) {
