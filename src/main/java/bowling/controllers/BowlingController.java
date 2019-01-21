@@ -1,36 +1,34 @@
 package bowling.controllers;
 
+import bowling.exceptions.GameFinishedException;
+import bowling.models.Frame;
 import bowling.models.Game;
-import bowling.models.Row;
-import bowling.models.RowRequest;
-import bowling.repositories.FrameRepository;
+import bowling.models.Roll;
+import bowling.models.RollRequest;
 import bowling.repositories.GameRepository;
-import bowling.repositories.RowRepository;
+import bowling.repositories.RollRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class BowlingController {
-    private RowRepository rowRepository;
-    private FrameRepository frameRepository;
+    private RollRepository rollRepository;
     private GameRepository gameRepository;
 
     @Autowired
-    public BowlingController(RowRepository rowRepository, FrameRepository frameRepository, GameRepository gameRepository) {
-        this.rowRepository = rowRepository;
-        this.frameRepository = frameRepository;
+    public BowlingController(RollRepository rollRepository, GameRepository gameRepository) {
+        this.rollRepository = rollRepository;
         this.gameRepository = gameRepository;
     }
 
-    @PostMapping(value = "/rows")
-    public Row save(@RequestBody final RowRequest rowRequest) throws Exception {
-        return frameRepository
-                .findById(rowRequest.getGameId())
-                .map(frame -> rowRepository.save(Row.builder().pinsHit(10).frame(frame).build()))
-                .orElseThrow(Exception::new);
+    @PostMapping(value = "/rolls")
+    public Roll save(@RequestBody final RollRequest rollRequest) throws GameFinishedException {
+        final Frame frame = gameRepository.findById(rollRequest.getGameId()).map(Game::getLatestFrame).orElseThrow(GameFinishedException::new);
+
+        final Roll roll = Roll.builder().frame(frame).pinsHit(rollRequest.getPinsHit()).build();
+        return rollRepository.save(roll);
     }
 
     @PostMapping(value = "/new-game")

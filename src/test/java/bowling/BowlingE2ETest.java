@@ -2,7 +2,7 @@ package bowling;
 
 import bowling.repositories.FrameRepository;
 import bowling.repositories.GameRepository;
-import bowling.repositories.RowRepository;
+import bowling.repositories.RollRepository;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,7 +20,7 @@ import static org.hamcrest.core.Is.is;
 public class BowlingE2ETest {
 
     @Autowired
-    private RowRepository rowRepository;
+    private RollRepository rollRepository;
 
     @Autowired
     private FrameRepository frameRepository;
@@ -33,13 +33,13 @@ public class BowlingE2ETest {
 
     @Test
     public void rowEndpoint() {
-        final String jsonRequest = "{ \"gameId\": \"3296288679181027561\", \"pinsHit\": \"10\" }";
+        final String jsonRequest = "{ \"gameId\": \"100\", \"pinsHit\": \"10\" }";
 
         given()
             .header("Content-Type", "application/json")
             .body(jsonRequest)
-        .when()
-            .post(getUrl("rows"))
+        .when().log().all()
+            .post(getUrl("rolls"))
         .then().log().all()
             .statusCode(is(200))
             .body("id", equalTo(1), "pinsHit", equalTo(10));
@@ -49,15 +49,15 @@ public class BowlingE2ETest {
     public void shouldReturn2xxWhenNewGameEndpointIsHit() {
         given()
                 .header("Content-Type", "application/json")
-        .when()
+        .when().log().all()
                 .post(getUrl("new-game"))
-        .then()
+        .then().log().all()
                 .statusCode(is(200));
     }
 
     @After
     public void tearDown() {
-        rowRepository.deleteAll();
+        rollRepository.deleteAll();
         frameRepository.deleteAll();
         gameRepository.deleteAll();
     }

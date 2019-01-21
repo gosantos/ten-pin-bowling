@@ -3,9 +3,12 @@ package bowling.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,12 +18,14 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
-public class Row {
+public class Roll {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -29,8 +34,8 @@ public class Row {
     @Max(value = 10)
     private Integer pinsHit;
 
-    @ManyToOne
-    @JoinColumn(name="frame_id")
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "frame_id")
     @JsonIgnore
     private Frame frame;
 }

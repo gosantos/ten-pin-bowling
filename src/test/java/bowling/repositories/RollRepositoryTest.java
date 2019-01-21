@@ -1,7 +1,6 @@
 package bowling.repositories;
 
-import bowling.models.Frame;
-import bowling.models.Row;
+import bowling.models.Roll;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,23 +15,23 @@ import static org.junit.Assert.assertThat;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
-public class RowRepositoryTest {
+public class RollRepositoryTest {
 
     @Autowired
-    private RowRepository rowRepository;
+    private RollRepository rollRepository;
 
     @Test
     public void shouldSaveAndFetchARow() {
-        final Row row = Row.builder().pinsHit(10).build();
-        rowRepository.save(row);
+        final Roll roll = Roll.builder().pinsHit(10).build();
+        rollRepository.save(roll);
 
-        final Optional<Row> rowRepositoryById = rowRepository.findById(row.getId());
+        final Optional<Roll> rowRepositoryById = rollRepository.findById(roll.getId());
 
-        assertThat(rowRepositoryById, is(Optional.of(row)));
+        assertThat(rowRepositoryById, is(Optional.of(roll)));
     }
 
     @After
     public void tearDown() {
-        rowRepository.deleteAll();
+        rollRepository.deleteAll();
     }
 }

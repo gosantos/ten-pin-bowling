@@ -2,15 +2,16 @@ package bowling.controllers;
 
 import bowling.models.Frame;
 import bowling.models.Game;
-import bowling.models.Row;
-import bowling.models.RowRequest;
-import bowling.repositories.FrameRepository;
+import bowling.models.Roll;
+import bowling.models.RollRequest;
 import bowling.repositories.GameRepository;
-import bowling.repositories.RowRepository;
+import bowling.repositories.RollRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.is;
@@ -24,10 +25,7 @@ public class BowlingControllerTest {
     private BowlingController bowlingController;
 
     @Mock
-    private RowRepository rowRepository;
-
-    @Mock
-    private FrameRepository frameRepository;
+    private RollRepository rollRepository;
 
     @Mock
     private GameRepository gameRepository;
@@ -35,23 +33,25 @@ public class BowlingControllerTest {
     @Before
     public void setUp() {
         initMocks(this);
-        bowlingController = new BowlingController(rowRepository, frameRepository, gameRepository);
+        bowlingController = new BowlingController(rollRepository, gameRepository);
     }
 
     @Test
-    public void shouldSaveARow() throws Exception {
-        final RowRequest rowRequest = new RowRequest(1L, 10);
+    public void shouldSaveARow() {
+        final RollRequest rollRequest = new RollRequest(1L, 10);
 
-        final Frame frame = Frame.builder().build();
-        final Optional<Frame> frameOptional = Optional.of(frame);
-        given(frameRepository.findById(1L)).willReturn(frameOptional);
+        final Frame frame = Frame.builder().rolls(new ArrayList<>()).build();
 
-        final Row row = Row.builder().pinsHit(10).frame(frame).build();
-        given(rowRepository.save(row)).willReturn(row);
+        final Game game = Game.builder().frames(Collections.singletonList(frame)).build();
 
-        final Row savedRow = bowlingController.save(rowRequest);
+        given(gameRepository.findById(1L)).willReturn(Optional.of(game));
 
-        assertThat(savedRow, is(row));
+        final Roll roll = Roll.builder().pinsHit(10).frame(frame).build();
+        given(rollRepository.save(roll)).willReturn(roll);
+
+        final Roll savedRoll = bowlingController.save(rollRequest);
+
+        assertThat(savedRoll, is(roll));
     }
 
     @Test
