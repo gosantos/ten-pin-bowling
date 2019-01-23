@@ -33,27 +33,22 @@ public class Game {
     private Long id;
 
     @OneToMany(mappedBy = "game")
-    @Builder.Default
     @JsonIgnore
+    @Builder.Default
     private Collection<Frame> frames = new ArrayList<>();
 
     @JsonIgnore
     public Frame getLatestFrame() {
-        if (hasFinished() && !isBonusRoll()) return null;
+        final Frame lastFrame = Iterables.getLast(frames, Frame.builder().num(1).game(this).build());
 
-        if (isBonusRoll() || !frames.isEmpty() && !Iterables.getLast(frames).hasFinished()) {
-            return Iterables.getLast(frames);
+        if (lastFrame.hasFinished()) {
+            return Frame.builder().num(lastFrame.getNum() + 1).game(this).build();
         }
 
-        return Frame.builder().game(this).build();
+        return lastFrame;
     }
 
-    @JsonIgnore
-    boolean isBonusRoll() {
-        return frames.size() == MAX_FRAMES && Iterables.getLast(frames).isBonusRoll();
-    }
-
-    boolean hasFinished() {
+    public boolean hasFinished() {
         return frames.size() == MAX_FRAMES && Iterables.getLast(frames).hasFinished();
     }
 }

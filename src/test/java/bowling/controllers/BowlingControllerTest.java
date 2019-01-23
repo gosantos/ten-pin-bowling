@@ -9,6 +9,7 @@ import bowling.repositories.RollRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.springframework.data.crossstore.ChangeSetPersister;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,7 +38,7 @@ public class BowlingControllerTest {
     }
 
     @Test
-    public void shouldSaveARow() {
+    public void shouldSaveARow() throws ChangeSetPersister.NotFoundException {
         final RollRequest rollRequest = new RollRequest(1L, 10);
 
         final Frame frame = Frame.builder().rolls(new ArrayList<>()).build();

@@ -11,66 +11,108 @@ import static org.junit.Assert.assertThat;
 
 public class GameTest {
 
-    private static final int MAX_FRAMES = 10;
+    private static final int LAST_FRAME = 10;
+    private static final int FIRST_FRAME = 1;
 
     @Test
-    public void getLatestFrame() {
+    public void shouldReturnANewFrameWhenTheCurrentOneHasFinished() {
         final Roll roll = Roll.builder().pinsHit(10).build();
-        final Frame frame = Frame.builder().rolls(Collections.singletonList(roll)).build();
+        final Frame frame = Frame.builder().rolls(Collections.singletonList(roll)).num(1).build();
         final Game game = Game.builder().frames(Collections.singletonList(frame)).build();
 
-        final Frame expectedFrame = Frame.builder().game(game).build();
+        final Frame expectedFrame = Frame.builder().num(2).game(game).build();
 
         assertThat(game.getLatestFrame(), is(expectedFrame));
     }
 
     @Test
-    public void shouldGetLatestFrameWhenIsABonusRoll() {
+    public void shouldNotBeFinishedWhenTheLastFrameIsAStrikeAndHasOnlyOneRoll() {
         final Roll roll = Roll.builder().pinsHit(10).build();
 
         final Game game = Game.builder().frames(new ArrayList<>()).build();
 
-        for (int i = 0; i < MAX_FRAMES; i++) {
-            game.getFrames().add(Frame.builder().id((long) i).rolls(Collections.singletonList(roll)).build());
+        for (int frameNumber = FIRST_FRAME; frameNumber <= LAST_FRAME; frameNumber++) {
+            game.getFrames().add(Frame.builder().num(frameNumber).rolls(Arrays.asList(roll)).build());
         }
 
-        assertThat(game.getLatestFrame().isValid(), is(true));
+        assertThat(game.hasFinished(), is(false));
     }
 
     @Test
-    public void getLatestFrameWhenThereIsNoFrame() {
-        final Game game = Game.builder().build();
-
-        final Frame expectedFrame = Frame.builder().game(game).build();
-
-        assertThat(game.getLatestFrame(), is(expectedFrame));
-    }
-
-    @Test
-    public void hasFinished() {
+    public void shouldNotBeFinishedWhenTheLastFrameIsAStrikeAndHasTwoRolls() {
         final Roll roll = Roll.builder().pinsHit(10).build();
 
         final Game game = Game.builder().frames(new ArrayList<>()).build();
 
-        for (int i = 0; i < MAX_FRAMES; i++) {
-            game.getFrames().add(Frame.builder().id((long) i).rolls(Arrays.asList(roll)).build());
+        for (int frameNumber = FIRST_FRAME; frameNumber < LAST_FRAME; frameNumber++) {
+            game.getFrames().add(Frame.builder().num(frameNumber).rolls(Arrays.asList(roll)).build());
         }
 
-        assertThat(game.hasFinished(), is(true));
+        game.getFrames().add(Frame.builder().num(LAST_FRAME).rolls(Arrays.asList(roll, roll)).build());
+
+        assertThat(game.hasFinished(), is(false));
     }
 
     @Test
-    public void hasFinished2() {
+    public void shouldNotBeFinishedWhenTheLastFrameIsASpareAndHasOnlyOneRoll() {
+        final Roll roll = Roll.builder().pinsHit(10).build();
+
+        final Game game = Game.builder().frames(new ArrayList<>()).build();
+
+        for (int frameNumber = FIRST_FRAME; frameNumber <= LAST_FRAME; frameNumber++) {
+            game.getFrames().add(Frame.builder().num(frameNumber).rolls(Arrays.asList(roll)).build());
+        }
+
+        assertThat(game.hasFinished(), is(false));
+    }
+
+    @Test
+    public void shouldNotBeFinishedWhenTheLastFrameIsASpareAndHasTwoRolls() {
+        final Roll roll = Roll.builder().pinsHit(10).build();
+
+        final Game game = Game.builder().frames(new ArrayList<>()).build();
+
+        for (int frameNumber = FIRST_FRAME; frameNumber < LAST_FRAME; frameNumber++) {
+            game.getFrames().add(Frame.builder().num(frameNumber).rolls(Arrays.asList(roll)).build());
+        }
+
+        final Roll roll2 = Roll.builder().pinsHit(5).build();
+        final Roll roll3 = Roll.builder().pinsHit(5).build();
+
+        game.getFrames().add(Frame.builder().num(LAST_FRAME).rolls(Arrays.asList(roll2, roll3)).build());
+
+        assertThat(game.hasFinished(), is(false));
+    }
+
+
+    @Test
+    public void shouldNotBeFinishedWhenTheLastFrameIsIncomplete() {
+        final Roll roll = Roll.builder().pinsHit(10).build();
+
+        final Game game = Game.builder().frames(new ArrayList<>()).build();
+
+        for (int frameNumber = FIRST_FRAME; frameNumber < LAST_FRAME; frameNumber++) {
+            game.getFrames().add(Frame.builder().num(frameNumber).rolls(Arrays.asList(roll)).build());
+        }
+
+        final Roll roll2 = Roll.builder().pinsHit(5).build();
+        game.getFrames().add(Frame.builder().num(LAST_FRAME).rolls(Arrays.asList(roll2)).build());
+
+        assertThat(game.hasFinished(), is(false));
+    }
+
+    @Test
+    public void shouldBeFinishedWhenTheLastFrameIsARegularOne() {
         final Roll roll1 = Roll.builder().pinsHit(10).build();
         final Game game = Game.builder().frames(new ArrayList<>()).build();
 
-        for (int i = 0; i < MAX_FRAMES - 1; i++) {
-            game.getFrames().add(Frame.builder().id((long) i).rolls(Arrays.asList(roll1)).build());
+        for (int frameNumber = FIRST_FRAME; frameNumber < LAST_FRAME; frameNumber++) {
+            game.getFrames().add(Frame.builder().num(frameNumber).rolls(Arrays.asList(roll1)).build());
         }
 
         final Roll roll2 = Roll.builder().pinsHit(3).build();
         final Roll roll3 = Roll.builder().pinsHit(3).build();
-        final Frame frame2 = Frame.builder().rolls(Arrays.asList(roll2, roll3)).build();
+        final Frame frame2 = Frame.builder().num(LAST_FRAME).rolls(Arrays.asList(roll2, roll3)).build();
 
         game.getFrames().add(frame2);
 
@@ -78,57 +120,14 @@ public class GameTest {
     }
 
     @Test
-    public void hasNotFinished() {
+    public void shouldNotBeFinishedWhenTheLastFrameIsARegularOne() {
         final Roll roll1 = Roll.builder().pinsHit(10).build();
         final Game game = Game.builder().frames(new ArrayList<>()).build();
 
-        for (int i = 0; i < MAX_FRAMES - 1; i++) {
-            game.getFrames().add(Frame.builder().id((long) i).rolls(Collections.singletonList(roll1)).build());
+        for (int frameNumber = FIRST_FRAME; frameNumber < LAST_FRAME; frameNumber++) {
+            game.getFrames().add(Frame.builder().num(frameNumber).rolls(Arrays.asList(roll1)).build());
         }
 
         assertThat(game.hasFinished(), is(false));
-    }
-
-    @Test
-    public void hasNotFinished2() {
-        final Game game = Game.builder().frames(new ArrayList<>()).build();
-
-        for (int i = 0; i < MAX_FRAMES - 1; i++) {
-            final Roll roll = Roll.builder().pinsHit(10).build();
-            game.getFrames().add(Frame.builder().id((long) i).rolls(Collections.singletonList(roll)).build());
-        }
-
-        final Roll roll2 = Roll.builder().pinsHit(3).build();
-        final Frame frame2 = Frame.builder().rolls(Collections.singletonList(roll2)).build();
-
-        game.getFrames().add(frame2);
-
-        assertThat(game.hasFinished(), is(false));
-    }
-
-    @Test
-    public void isBonusRoll() {
-        final Roll roll = Roll.builder().pinsHit(10).build();
-
-        final Game game = Game.builder().frames(new ArrayList<>()).build();
-
-        for (int i = 0; i < MAX_FRAMES; i++) {
-            game.getFrames().add(Frame.builder().id((long) i).rolls(Arrays.asList(roll)).build());
-        }
-
-        assertThat(game.isBonusRoll(), is(true));
-    }
-
-    @Test
-    public void isNotABonusRoll() {
-        final Roll roll = Roll.builder().pinsHit(9).build();
-
-        final Game game = Game.builder().frames(new ArrayList<>()).build();
-
-        for (int i = 0; i < MAX_FRAMES; i++) {
-            game.getFrames().add(Frame.builder().id((long) i).rolls(Arrays.asList(roll)).build());
-        }
-
-        assertThat(game.isBonusRoll(), is(false));
     }
 }

@@ -8,6 +8,7 @@ import bowling.models.RollRequest;
 import bowling.repositories.GameRepository;
 import bowling.repositories.RollRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,8 +25,15 @@ public class BowlingController {
     }
 
     @PostMapping(value = "/rolls")
-    public Roll save(@RequestBody final RollRequest rollRequest) throws GameFinishedException {
-        final Frame frame = gameRepository.findById(rollRequest.getGameId()).map(Game::getLatestFrame).orElseThrow(GameFinishedException::new);
+    public Roll save(@RequestBody final RollRequest rollRequest) throws GameFinishedException, NotFoundException {
+        final Game game = gameRepository.findById(rollRequest.getGameId())
+                .orElseThrow(NotFoundException::new);
+
+        if (game.hasFinished()) {
+            throw new GameFinishedException();
+        }
+
+        final Frame frame = game.getLatestFrame();
 
         final Roll roll = Roll.builder().frame(frame).pinsHit(rollRequest.getPinsHit()).build();
 
