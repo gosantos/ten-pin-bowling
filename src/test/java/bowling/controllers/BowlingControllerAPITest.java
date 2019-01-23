@@ -5,23 +5,17 @@ import bowling.exceptions.GameNotFoundException;
 import bowling.models.Frame;
 import bowling.models.Game;
 import bowling.models.Roll;
-import bowling.repositories.GameRepository;
-import bowling.repositories.RollRepository;
 import bowling.services.BowlingService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.crossstore.ChangeSetPersister;
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Optional;
 
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -30,8 +24,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @WebMvcTest(controllers = BowlingController.class)
 public class BowlingControllerAPITest {
-    private static final int FIRST_FRAME = 1;
-    private static final int LAST_FRAME = 10;
     @Autowired
     private MockMvc mockMvc;
 
@@ -47,9 +39,9 @@ public class BowlingControllerAPITest {
         final Roll roll = Roll.builder().pinsHit(10).frame(frame).build();
         given(bowlingService.updateGame(game, 10)).willReturn(roll);
 
-        final String jsonRequest = "{ \"gameId\": \"100\", \"pinsHit\": \"10\" }";
+        final String jsonRequest = "{ \"pinsHit\": \"10\" }";
 
-        mockMvc.perform(post("/rolls")
+        mockMvc.perform(post("/games/100/rolls")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(jsonRequest))
                 .andExpect(status().is2xxSuccessful());
@@ -61,7 +53,7 @@ public class BowlingControllerAPITest {
 
         given(bowlingService.findGameById(584L)).willThrow(GameNotFoundException.class);
 
-        mockMvc.perform(post("/rolls")
+        mockMvc.perform(post("/games/584/rolls")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(jsonRequest))
                 .andExpect(status().is4xxClientError());
@@ -69,14 +61,14 @@ public class BowlingControllerAPITest {
 
     @Test
     public void shouldReturn4xxWhenGameHasFinished() throws Exception {
-        final String jsonRequest = "{ \"gameId\": \"13\", \"pinsHit\": \"10\" }";
+        final String jsonRequest = "{ \"pinsHit\": \"10\" }";
 
         final Game game = Game.builder().build();
 
         given(bowlingService.findGameById(13L)).willReturn(game);
         given(bowlingService.updateGame(game, 10)).willThrow(GameFinishedException.class);
 
-        mockMvc.perform(post("/rolls")
+        mockMvc.perform(post("/games/13/rolls")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(jsonRequest))
                 .andExpect(status().is4xxClientError());

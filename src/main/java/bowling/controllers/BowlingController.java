@@ -5,7 +5,7 @@ import bowling.models.Roll;
 import bowling.models.RollRequest;
 import bowling.services.BowlingService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,9 +19,9 @@ public class BowlingController {
         this.bowlingService = bowlingService;
     }
 
-    @PostMapping(value = "/rolls")
-    public Roll save(@RequestBody final RollRequest rollRequest) {
-        final Game game = bowlingService.findGameById(rollRequest.getGameId());
+    @PostMapping(value = "/games/{gameId}/rolls")
+    public Roll updateGame(@PathVariable("gameId") Long gameId, @RequestBody final RollRequest rollRequest) {
+        final Game game = bowlingService.findGameById(gameId);
 
         return bowlingService.updateGame(game, rollRequest.getPinsHit());
     }

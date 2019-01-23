@@ -8,6 +8,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RollRequest {
-    private Long gameId;
     private Integer pinsHit;
 }

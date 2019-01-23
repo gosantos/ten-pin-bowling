@@ -8,7 +8,6 @@ import bowling.services.BowlingService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,8 +32,8 @@ public class BowlingControllerTest {
     }
 
     @Test
-    public void shouldSaveARow() throws NotFoundException {
-        final RollRequest rollRequest = new RollRequest(1L, 10);
+    public void shouldSaveARow() {
+        final RollRequest rollRequest = new RollRequest(10);
 
         final Frame frame = Frame.builder().rolls(new ArrayList<>()).build();
 
@@ -46,7 +45,7 @@ public class BowlingControllerTest {
 
         given(bowlingService.updateGame(game, rollRequest.getPinsHit())).willReturn(roll);
 
-        final Roll savedRoll = bowlingController.save(rollRequest);
+        final Roll savedRoll = bowlingController.updateGame(1L, rollRequest);
 
         assertThat(savedRoll, is(roll));
     }

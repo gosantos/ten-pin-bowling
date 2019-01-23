@@ -18,7 +18,6 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
 import static javax.persistence.GenerationType.IDENTITY;
-import static javax.persistence.GenerationType.TABLE;
 
 @Getter
 @Setter

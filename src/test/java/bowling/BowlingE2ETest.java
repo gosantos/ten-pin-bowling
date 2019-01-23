@@ -38,13 +38,13 @@ public class BowlingE2ETest {
 
     @Test
     public void shouldReturn2xxWhenRollEndpointIsHit() {
-        final String jsonRequest = "{ \"gameId\": \"1\", \"pinsHit\": \"10\" }";
+        final String jsonRequest = "{ \"pinsHit\": \"10\" }";
 
         given()
                 .header("Content-Type", "application/json")
                 .body(jsonRequest)
                 .when().log().all()
-                .post(getUrl("rolls"))
+                .post(getUrl("games/1/rolls"))
                 .then().log().all()
                 .statusCode(is(200))
                 .body("pinsHit", equalTo(10));
