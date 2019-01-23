@@ -17,6 +17,9 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
+import static javax.persistence.GenerationType.IDENTITY;
+import static javax.persistence.GenerationType.TABLE;
+
 @Getter
 @Setter
 @EqualsAndHashCode
@@ -26,7 +29,7 @@ import javax.validation.constraints.Min;
 @Entity
 public class Roll {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     @Min(value = 0)

@@ -19,6 +19,9 @@ import javax.validation.constraints.AssertTrue;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import static javax.persistence.GenerationType.IDENTITY;
+import static javax.persistence.GenerationType.TABLE;
+
 @Getter
 @Setter
 @EqualsAndHashCode
@@ -34,7 +37,7 @@ public class Frame {
     private static final int MAX_BONUS_PINS = 30;
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     @OneToMany(mappedBy = "frame")
@@ -61,13 +64,13 @@ public class Frame {
         return isBonusRoll() || (sumAllRolls() >= MIN_PINS && sumAllRolls() <= MAX_PINS);
     }
 
-    private Integer sumAllRolls() {
+    Integer sumAllRolls() {
         return rolls.stream().map(Roll::getPinsHit).reduce(MIN_PINS, Integer::sum);
     }
 
     @JsonIgnore
     boolean isBonusRoll() {
-        return isStrike() && (rolls.size() < BONUS_ROLLS_SIZE) && sumAllRolls() <= MAX_BONUS_PINS;
+        return (isStrike() || isSpare()) && (rolls.size() < BONUS_ROLLS_SIZE) && sumAllRolls() <= MAX_BONUS_PINS;
     }
 
     boolean hasFinished() {

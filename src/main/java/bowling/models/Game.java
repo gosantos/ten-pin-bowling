@@ -16,6 +16,8 @@ import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 @Getter
 @Setter
 @EqualsAndHashCode
@@ -27,11 +29,12 @@ public class Game {
     private static final int MAX_FRAMES = 10;
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     @OneToMany(mappedBy = "game")
     @Builder.Default
+    @JsonIgnore
     private Collection<Frame> frames = new ArrayList<>();
 
     @JsonIgnore

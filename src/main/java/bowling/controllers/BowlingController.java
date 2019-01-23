@@ -28,6 +28,7 @@ public class BowlingController {
         final Frame frame = gameRepository.findById(rollRequest.getGameId()).map(Game::getLatestFrame).orElseThrow(GameFinishedException::new);
 
         final Roll roll = Roll.builder().frame(frame).pinsHit(rollRequest.getPinsHit()).build();
+
         return rollRepository.save(roll);
     }
 
