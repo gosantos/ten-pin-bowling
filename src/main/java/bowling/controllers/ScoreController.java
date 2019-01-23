@@ -24,9 +24,6 @@ public class ScoreController {
     public Score getScore(@PathVariable Long gameId) {
         final Game game = gameRepository.findById(gameId).get();
 
-        final Score build = Score.builder().gameId(gameId).frames((List<Frame>) game.getFrames()).build();
-
-        return build;
+        return Score.builder().gameId(gameId).frames((List<Frame>) game.getFrames()).build();
     }
-
 }

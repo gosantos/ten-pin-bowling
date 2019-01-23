@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.Value;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,6 +27,8 @@ public class Score {
         int score = 0;
         int roll = 0;
 
+        final ArrayList<Object> scoreForFrame = new ArrayList<>();
+
         for (int frameNumber = 0; frameNumber < frames.size(); frameNumber++) {
             final Frame frame = Iterables.get(frames, frameNumber);
 
@@ -40,6 +43,8 @@ public class Score {
                 roll = roll + 2;
             }
         }
+
+
 
         return score;
     }

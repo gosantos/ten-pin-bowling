@@ -22,7 +22,7 @@ public class GameTest {
 
         final Frame expectedFrame = Frame.builder().num(2).game(game).build();
 
-        assertThat(game.getLatestFrame(), is(expectedFrame));
+        assertThat(game.getCurrentFrame(), is(expectedFrame));
     }
 
     @Test

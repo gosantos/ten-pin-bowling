@@ -38,7 +38,7 @@ public class Game {
     private Collection<Frame> frames = new ArrayList<>();
 
     @JsonIgnore
-    public Frame getLatestFrame() {
+    public Frame getCurrentFrame() {
         final Frame lastFrame = Iterables.getLast(frames, Frame.builder().num(1).game(this).build());
 
         if (lastFrame.hasFinished()) {

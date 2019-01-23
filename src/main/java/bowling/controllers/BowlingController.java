@@ -1,12 +1,9 @@
 package bowling.controllers;
 
-import bowling.exceptions.GameFinishedException;
-import bowling.models.Frame;
 import bowling.models.Game;
 import bowling.models.Roll;
 import bowling.models.RollRequest;
-import bowling.repositories.GameRepository;
-import bowling.repositories.RollRepository;
+import bowling.services.BowlingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,33 +12,22 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class BowlingController {
-    private RollRepository rollRepository;
-    private GameRepository gameRepository;
+    private BowlingService bowlingService;
 
     @Autowired
-    public BowlingController(RollRepository rollRepository, GameRepository gameRepository) {
-        this.rollRepository = rollRepository;
-        this.gameRepository = gameRepository;
+    public BowlingController(BowlingService bowlingService) {
+        this.bowlingService = bowlingService;
     }
 
     @PostMapping(value = "/rolls")
-    public Roll save(@RequestBody final RollRequest rollRequest) throws GameFinishedException, NotFoundException {
-        final Game game = gameRepository.findById(rollRequest.getGameId())
-                .orElseThrow(NotFoundException::new);
+    public Roll save(@RequestBody final RollRequest rollRequest) {
+        final Game game = bowlingService.findGameById(rollRequest.getGameId());
 
-        if (game.hasFinished()) {
-            throw new GameFinishedException();
-        }
-
-        final Frame frame = game.getLatestFrame();
-
-        final Roll roll = Roll.builder().frame(frame).pinsHit(rollRequest.getPinsHit()).build();
-
-        return rollRepository.save(roll);
+        return bowlingService.updateGame(game, rollRequest.getPinsHit());
     }
 
-    @PostMapping(value = "/new-game")
+    @PostMapping(value = "/games")
     public Game newGame() {
-        return gameRepository.save(Game.builder().build());
+        return bowlingService.newGame();
     }
 }

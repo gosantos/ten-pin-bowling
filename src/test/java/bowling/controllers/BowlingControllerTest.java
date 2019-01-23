@@ -4,16 +4,14 @@ import bowling.models.Frame;
 import bowling.models.Game;
 import bowling.models.Roll;
 import bowling.models.RollRequest;
-import bowling.repositories.GameRepository;
-import bowling.repositories.RollRepository;
+import bowling.services.BowlingService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Optional;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -26,29 +24,27 @@ public class BowlingControllerTest {
     private BowlingController bowlingController;
 
     @Mock
-    private RollRepository rollRepository;
-
-    @Mock
-    private GameRepository gameRepository;
+    private BowlingService bowlingService;
 
     @Before
     public void setUp() {
         initMocks(this);
-        bowlingController = new BowlingController(rollRepository, gameRepository);
+        bowlingController = new BowlingController(bowlingService);
     }
 
     @Test
-    public void shouldSaveARow() throws ChangeSetPersister.NotFoundException {
+    public void shouldSaveARow() throws NotFoundException {
         final RollRequest rollRequest = new RollRequest(1L, 10);
 
         final Frame frame = Frame.builder().rolls(new ArrayList<>()).build();
 
         final Game game = Game.builder().frames(Collections.singletonList(frame)).build();
 
-        given(gameRepository.findById(1L)).willReturn(Optional.of(game));
+        given(bowlingService.findGameById(1L)).willReturn(game);
 
         final Roll roll = Roll.builder().pinsHit(10).frame(frame).build();
-        given(rollRepository.save(roll)).willReturn(roll);
+
+        given(bowlingService.updateGame(game, rollRequest.getPinsHit())).willReturn(roll);
 
         final Roll savedRoll = bowlingController.save(rollRequest);
 
@@ -58,7 +54,8 @@ public class BowlingControllerTest {
     @Test
     public void shouldCreateANewGame() {
         final Game expectedNewGame = Game.builder().build();
-        given(gameRepository.save(expectedNewGame)).willReturn(expectedNewGame);
+
+        given(bowlingService.newGame()).willReturn(expectedNewGame);
 
         final Game actualNewGame = bowlingController.newGame();
 
