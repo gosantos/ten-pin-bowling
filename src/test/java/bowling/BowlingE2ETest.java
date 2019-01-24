@@ -31,7 +31,7 @@ public class BowlingE2ETest {
         given()
                 .header("Content-Type", "application/json")
                 .when().log().all()
-                .get(getUrl("score/{gameId}"), 1)
+                .get(getUrl("scores/{gameId}"), 1)
                 .then().log().all()
                 .statusCode(is(200));
     }

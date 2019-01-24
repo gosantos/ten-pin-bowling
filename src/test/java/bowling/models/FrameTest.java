@@ -5,7 +5,6 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
@@ -56,7 +55,7 @@ public class FrameTest {
     public void shouldReturnTrueWhenIsASpareOnTheBonusRoll() {
         final Roll roll1 = Roll.builder().pinsHit(0).build();
         final Roll roll2 = Roll.builder().pinsHit(10).build();
-        final HashSet<Roll> rolls = Sets.newHashSet(roll1, roll2);
+        final List<Roll> rolls = Arrays.asList(roll1, roll2);
         final Frame frame = Frame.builder().num(10).rolls(rolls).build();
 
         assertThat(frame.isSpare(), is(true));
@@ -66,7 +65,7 @@ public class FrameTest {
     public void shouldReturnFalseWhenIsNotASpare() {
         final Roll roll1 = Roll.builder().pinsHit(7).build();
         final Roll roll2 = Roll.builder().pinsHit(1).build();
-        final HashSet<Roll> rolls = Sets.newHashSet(roll1, roll2);
+        final List<Roll> rolls = Arrays.asList(roll1, roll2);
         final Frame frame = Frame.builder().rolls(rolls).build();
 
         assertThat(frame.isSpare(), is(false));
@@ -133,7 +132,7 @@ public class FrameTest {
     @Test
     public void shouldNotBeFinishedWhenIsNotAStrikeOrSpare() {
         final Roll roll1 = Roll.builder().pinsHit(7).build();
-        final HashSet<Roll> rolls = Sets.newHashSet(roll1);
+        final List<Roll> rolls = Arrays.asList((roll1));
         final Frame frame = Frame.builder().rolls(rolls).build();
 
         assertThat(frame.hasFinished(), is(false));

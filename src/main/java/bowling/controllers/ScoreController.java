@@ -1,6 +1,6 @@
 package bowling.controllers;
 
-import bowling.models.Frame;
+import bowling.exceptions.GameNotFoundException;
 import bowling.models.Game;
 import bowling.models.Score;
 import bowling.repositories.GameRepository;
@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 public class ScoreController {
@@ -20,10 +18,10 @@ public class ScoreController {
         this.gameRepository = gameRepository;
     }
 
-    @GetMapping(value = "/score/{gameId}")
+    @GetMapping(value = "/scores/{gameId}")
     public Score getScore(@PathVariable Long gameId) {
-        final Game game = gameRepository.findById(gameId).get();
+        final Game game = gameRepository.findById(gameId).orElseThrow(GameNotFoundException::new);
 
-        return Score.builder().gameId(gameId).frames((List<Frame>) game.getFrames()).build();
+        return Score.builder().gameId(gameId).frames(game.getFrames()).build();
     }
 }

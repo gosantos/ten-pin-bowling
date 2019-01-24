@@ -17,6 +17,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -43,7 +44,7 @@ public class Frame {
 
     @OneToMany(mappedBy = "frame")
     @Builder.Default
-    private Collection<Roll> rolls = new ArrayList<>();
+    private List<Roll> rolls = new ArrayList<>();
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "game_id")

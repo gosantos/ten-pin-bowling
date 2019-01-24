@@ -14,7 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -35,7 +35,7 @@ public class Game {
     @OneToMany(mappedBy = "game")
     @JsonIgnore
     @Builder.Default
-    private Collection<Frame> frames = new ArrayList<>();
+    private List<Frame> frames = new ArrayList<>();
 
     @JsonIgnore
     public Frame getCurrentFrame() {
