@@ -1,5 +1,6 @@
 package bowling.controllers;
 
+import bowling.converters.ScoreConverter;
 import bowling.exceptions.GameNotFoundException;
 import bowling.models.Game;
 import bowling.models.Score;
@@ -16,6 +17,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willReturn;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class ScoreControllerTest {
@@ -25,10 +27,13 @@ public class ScoreControllerTest {
     @Mock
     private GameRepository gameRepository;
 
+    @Mock
+    private ScoreConverter scoreConverter;
+
     @Before
     public void setUp() {
         initMocks(this);
-        scoreController = new ScoreController(gameRepository);
+        scoreController = new ScoreController(gameRepository, scoreConverter);
     }
 
     @Test(expected = GameNotFoundException.class)
@@ -42,7 +47,9 @@ public class ScoreControllerTest {
 
         given(gameRepository.findById(100L)).willReturn(Optional.of(game));
 
-        final Score expectedScore = Score.builder().gameId(100L).frames(Collections.emptyList()).build();
+        given(scoreConverter.convert(game)).willReturn(Score.builder().gameId(100L).build());
+
+        final Score expectedScore = Score.builder().gameId(100L).scoreFrames(Collections.emptyList()).build();
 
         final Score actualScore = scoreController.getScore(100L);
 

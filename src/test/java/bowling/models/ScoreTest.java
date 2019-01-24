@@ -1,5 +1,7 @@
 package bowling.models;
 
+import bowling.converters.ScoreConverter;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -10,6 +12,14 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 public class ScoreTest {
+
+    private ScoreConverter scoreConverter;
+
+    @Before
+    public void setUp() throws Exception {
+        scoreConverter = new ScoreConverter();
+    }
+
     @Test
     public void shouldGetTheTotalScore() {
         // 10 + 3 + 4
@@ -50,7 +60,11 @@ public class ScoreTest {
 
         final List<Frame> frames = Arrays.asList(frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8, frame9, frame10);
 
-        final Score score = Score.builder().frames(frames).build();
+        final Game game = Game.builder().id(1L).frames(frames).build();
+
+        final Score score = scoreConverter.convert(game);
+
+        score.calculateScore();
 
         final Integer totalScore = score.getTotalScore();
 
@@ -74,7 +88,11 @@ public class ScoreTest {
 
         frames.add(frame);
 
-        final Score score = Score.builder().frames(frames).build();
+        final Game game = Game.builder().id(1L).frames(frames).build();
+
+        final Score score = scoreConverter.convert(game);
+
+        score.calculateScore();
 
         final Integer totalScore = score.getTotalScore();
 
@@ -100,7 +118,11 @@ public class ScoreTest {
 
         frames.add(frame);
 
-        final Score score = Score.builder().frames(frames).build();
+        final Game game = Game.builder().id(1L).frames(frames).build();
+
+        final Score score = scoreConverter.convert(game);
+
+        score.calculateScore();
 
         final Integer totalScore = score.getTotalScore();
 

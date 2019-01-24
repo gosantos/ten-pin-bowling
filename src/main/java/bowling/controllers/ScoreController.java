@@ -1,5 +1,6 @@
 package bowling.controllers;
 
+import bowling.converters.ScoreConverter;
 import bowling.exceptions.GameNotFoundException;
 import bowling.models.Game;
 import bowling.models.Score;
@@ -12,16 +13,22 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ScoreController {
     private GameRepository gameRepository;
+    private ScoreConverter scoreConverter;
 
     @Autowired
-    public ScoreController(GameRepository gameRepository) {
+    public ScoreController(GameRepository gameRepository, ScoreConverter scoreConverter) {
         this.gameRepository = gameRepository;
+        this.scoreConverter = scoreConverter;
     }
 
     @GetMapping(value = "/scores/{gameId}")
     public Score getScore(@PathVariable Long gameId) {
         final Game game = gameRepository.findById(gameId).orElseThrow(GameNotFoundException::new);
 
-        return Score.builder().gameId(gameId).frames(game.getFrames()).build();
+        final Score score = scoreConverter.convert(game);
+
+        score.calculateScore();
+
+        return score;
     }
 }

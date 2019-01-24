@@ -1,7 +1,11 @@
 package bowling.models;
 
+import lombok.Builder;
+import lombok.Value;
+
+@Value
+@Builder
 public class ScoreFrame {
-    private boolean isStrike;
-    private boolean isSpare;
-    private String rolls;
+    private Integer frameNumber;
+    private Integer currentScore;
 }

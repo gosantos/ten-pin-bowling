@@ -1,69 +1,74 @@
 package bowling.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.Iterables;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Data;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
-@Getter
-@EqualsAndHashCode
+@Data
 @Builder
 public class Score {
+    private static final int FIRST_FRAME = 1;
+    private static final int ALL_PINS = 10;
+
     private Long gameId;
 
-    @JsonIgnore
-    private List<Frame> frames;
+    private int numberOfFrames;
 
-    @JsonProperty
-    Integer getTotalScore() {
+    @Builder.Default
+    private List<Integer> rolls = new ArrayList<>();
+
+    @Builder.Default
+    private List<ScoreFrame> scoreFrames = new ArrayList<>();
+
+    private int totalScore;
+
+    public void calculateScore() {
         int score = 0;
         int roll = 0;
 
-        final ArrayList<Object> scoreForFrame = new ArrayList<>();
+        List<ScoreFrame> scoreFrames = new ArrayList<>();
 
-        for (int frameNumber = 0; frameNumber < frames.size(); frameNumber++) {
-            final Frame frame = Iterables.get(frames, frameNumber);
-
-            if (frame.isStrike()) {
-                score += 10 + sumStrikeBonus(roll);
+        for (int frameNumber = FIRST_FRAME; frameNumber <= numberOfFrames; frameNumber++) {
+            if (isStrike(roll)) {
+                score += ALL_PINS + strikeBonus(roll);
                 roll++;
-            } else if (frame.isSpare()) {
-                score += 10 + sumSpareBonus(roll);
-                roll = roll + 2;
+            } else if (isSpare(roll)) {
+                score += ALL_PINS + spareBonus(roll);
+                roll += 2;
             } else {
-                score += frame.sumAllRolls();
-                roll = roll + 2;
+                score += sumOfRolls(roll);
+                roll += 2;
             }
+
+            final ScoreFrame scoreFrame = ScoreFrame.builder().frameNumber(frameNumber).currentScore(score).build();
+            scoreFrames.add(scoreFrame);
         }
 
-
-
-        return score;
+        setTotalScore(score);
+        setScoreFrames(scoreFrames);
     }
 
-    @JsonIgnore
-    private List<Integer> getRolls() {
-        return frames.stream().map(Frame::getRolls).flatMap(Collection::stream).map(Roll::getPinsHit).collect(Collectors.toList());
+    private boolean isStrike(int frame) {
+        return Iterables.get(rolls, frame, 0) == 10;
     }
 
-    @JsonIgnore
-    private Integer getPinsByRollNumber(int rollNumber) {
-        return Iterables.get(getRolls(), rollNumber, 0);
+    private boolean isSpare(int frame) {
+        return sumOfRolls(frame) == 10;
     }
 
-    private int sumStrikeBonus(int frameNumber) {
-        return getPinsByRollNumber(frameNumber + 1) + getPinsByRollNumber(frameNumber + 2);
+    private int strikeBonus(int frame) {
+        return sumOfRolls(frame + 1);
     }
 
-    private int sumSpareBonus(int frameNumber) {
-        return getPinsByRollNumber(frameNumber + 2);
+    private int spareBonus(int frame) {
+        return Iterables.get(rolls, frame + 2, 0);
+    }
+
+    private int sumOfRolls(int frame) {
+        return Iterables.get(rolls, frame, 0) + Iterables.get(rolls, frame + 1, 0);
     }
 }
 
