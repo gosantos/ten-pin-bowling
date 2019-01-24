@@ -6,12 +6,6 @@ buildscript {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.5.RELEASE")
     }
 }
-////
-////plugins {
-////    id 'io.franzbecker.gradle-lombok' version '1.8'
-////}
-//
-//annotationProcessor 'org.projectlombok:lombok:1.16.20'
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
@@ -38,6 +32,8 @@ dependencies {
     compile('com.h2database:h2')
     compile('com.google.guava:guava:27.0.1-jre')
 
+    compile('io.springfox:springfox-swagger2:2.8.0')
+    compile('io.springfox:springfox-swagger-ui:2.8.0')
 
     testCompile("org.springframework.boot:spring-boot-starter-test")
     testCompile("junit:junit")
