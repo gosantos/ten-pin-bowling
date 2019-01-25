@@ -64,9 +64,7 @@ public class ScoreTest {
 
         final Score score = scoreConverter.convert(game);
 
-        score.calculateScore();
-
-        final Integer totalScore = score.getTotalScore();
+        final Integer totalScore = score.calculateTotalScore();
 
         assertThat(totalScore, is(195));
     }
@@ -90,11 +88,9 @@ public class ScoreTest {
 
         final Game game = Game.builder().id(1L).frames(frames).build();
 
-        final Score score = scoreConverter.convert(game);
+        final Score scoreResponse = scoreConverter.convert(game);
 
-        score.calculateScore();
-
-        final Integer totalScore = score.getTotalScore();
+        final Integer totalScore = scoreResponse.calculateTotalScore();
 
         assertThat(totalScore, is(300));
     }
@@ -120,11 +116,9 @@ public class ScoreTest {
 
         final Game game = Game.builder().id(1L).frames(frames).build();
 
-        final Score score = scoreConverter.convert(game);
+        final Score scoreResponse = scoreConverter.convert(game);
 
-        score.calculateScore();
-
-        final Integer totalScore = score.getTotalScore();
+        final Integer totalScore = scoreResponse.calculateTotalScore();
 
         assertThat(totalScore, is(268));
     }

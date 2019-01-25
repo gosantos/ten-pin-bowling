@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/gosantos/ten-pin-bowling/tree/master.svg?style=svg)](https://circleci.com/gh/gosantos/ten-pin-bowling/tree/master)
+
 # Ten Pin Bowling
 
 https://en.wikipedia.org/wiki/Ten-pin_bowling
@@ -9,87 +11,69 @@ These instructions will get you a copy of the project up and running on your loc
 ### Prerequisites
 
 * [Java 8](https://sdkman.io/usage)
-* [jq](https://stedolan.github.io/jq/) (optional)
 
 ### Installing
 
-A step by step series of examples that tell you how to get a development env running
-
-Say what the step will be
-
 ```
-./gradlew clean build
-```
+$ git clone https://github.com/gosantos/ten-pin-bowling
 
-And repeat
+$ cd ten-pin-bowling
 
-```
-until finished
-```
+$ ./gradlew clean build
 
-End with an example of getting some data out of the system or using it for a little demo
+$ ./gradlew bootRun
+
+$ curl https://localhost:8080/scores/1
+```
 
 ## Running the tests
 
-```
-./gradlew test
-```
-
+Automated tests
 
 ```
-./test.sh
+$ ./gradlew test
+```
+
+You can also execute some manual tests using the script below:
+
+```
+$ ./test.sh
 ```
 
 ### Docs
 
-http://localhost:8080/swagger-ui.html
+API Docs were built using Swagger. You can see it on the link below.
 
-### Break down into end to end tests
+[API Documentation](https://stark-tor-77061.herokuapp.com/swagger-ui.html)
 
-Explain what these tests test and why
+### Test approach
 
-```
-Give an example
-```
+I followed the pyramid testing approach.
 
-### And coding style tests
+<img alt="Test Pyramid" src="https://raw.githubusercontent.com/gosantos/ten-pin-bowling/master/testPyramid.jpg" height="200">
 
-Explain what these tests test and why
 
-```
-Give an example
-```
+Most of the tests are unitary. (28 tests)
+
+Repositories and API Tests are integration tests. (9 tests)
+
+EndToEndTests are running the application, making requests and interacting with the database. (3 tests)  
 
 ## Deployment
 
-Add additional notes about how to deploy this on a live system
 
-## Built With
+The application is deployed on Heroku.
+ 
+Every commit on the master branch triggers a circle ci build,
+after the build succeeds, the application is deployed.
 
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
+## Usage
 
-## Contributing
+``` 
+curl -H "Content-Type: application/json" -X POST  https://stark-tor-77061.herokuapp.com/games/
 
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
+curl -H "Content-Type: application/json"  -X POST -d '{ "pinsHit": "9" }' https://stark-tor-77061.herokuapp.com/games/{gameId}/rolls
+curl -H "Content-Type: application/json"  -X POST -d '{ "pinsHit": "1" }' https://stark-tor-77061.herokuapp.com/games/{gameId}/rolls
 
-## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
-
-## Authors
-
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-## Acknowledgments
-
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
+curl https://stark-tor-77061.herokuapp.com/scores/{gameId}
+```

@@ -12,7 +12,7 @@ import static org.hamcrest.core.Is.is;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class BowlingE2ETest {
+public class EndToEndTests {
     @LocalServerPort
     private int port;
 

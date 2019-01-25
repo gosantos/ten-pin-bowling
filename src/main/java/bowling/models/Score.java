@@ -1,11 +1,13 @@
 package bowling.models;
 
-import com.google.common.collect.Iterables;
 import lombok.Builder;
 import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.google.common.collect.Iterables.get;
+import static com.google.common.collect.Iterables.getLast;
 
 @Data
 @Builder
@@ -13,23 +15,16 @@ public class Score {
     private static final int FIRST_FRAME = 1;
     private static final int ALL_PINS = 10;
 
-    private Long gameId;
-
     private int numberOfFrames;
 
     @Builder.Default
     private List<Integer> rolls = new ArrayList<>();
 
-    @Builder.Default
-    private List<ScoreFrame> scoreFrames = new ArrayList<>();
-
-    private int totalScore;
-
-    public void calculateScore() {
+    public List<FrameScore> calculateScoreByFrame() {
         int score = 0;
         int roll = 0;
 
-        List<ScoreFrame> scoreFrames = new ArrayList<>();
+        List<FrameScore> frameScores = new ArrayList<>();
 
         for (int frameNumber = FIRST_FRAME; frameNumber <= numberOfFrames; frameNumber++) {
             if (isStrike(roll)) {
@@ -43,32 +38,39 @@ public class Score {
                 roll += 2;
             }
 
-            final ScoreFrame scoreFrame = ScoreFrame.builder().frameNumber(frameNumber).currentScore(score).build();
-            scoreFrames.add(scoreFrame);
+            final FrameScore frameScore = FrameScore.builder().frameNumber(frameNumber).currentScore(score).build();
+            frameScores.add(frameScore);
         }
 
-        setTotalScore(score);
-        setScoreFrames(scoreFrames);
+        return frameScores;
     }
 
-    private boolean isStrike(int frame) {
-        return Iterables.get(rolls, frame, 0) == 10;
+    public Integer calculateTotalScore() {
+        if (calculateScoreByFrame().isEmpty()) {
+            return 0;
+        }
+
+        return getLast(calculateScoreByFrame()).getCurrentScore();
     }
 
-    private boolean isSpare(int frame) {
-        return sumOfRolls(frame) == 10;
+    private boolean isStrike(int roll) {
+        return get(rolls, roll, 0) == ALL_PINS;
     }
 
-    private int strikeBonus(int frame) {
-        return sumOfRolls(frame + 1);
+    private boolean isSpare(int roll) {
+        return sumOfRolls(roll) == ALL_PINS;
     }
 
-    private int spareBonus(int frame) {
-        return Iterables.get(rolls, frame + 2, 0);
+    private int strikeBonus(int roll) {
+        return sumOfRolls(roll + 1);
     }
 
-    private int sumOfRolls(int frame) {
-        return Iterables.get(rolls, frame, 0) + Iterables.get(rolls, frame + 1, 0);
+    private int spareBonus(int roll) {
+        return get(rolls, roll + 2, 0);
+    }
+
+    private int sumOfRolls(int roll) {
+        return get(rolls, roll, 0) + get(rolls, roll + 1, 0);
     }
 }
 

@@ -1,13 +1,10 @@
 package bowling.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.common.collect.Iterables;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,17 +13,17 @@ import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.google.common.collect.Iterables.getLast;
 import static javax.persistence.GenerationType.IDENTITY;
 
-@Getter
-@Setter
-@EqualsAndHashCode
-@NoArgsConstructor
+@Data
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Entity
 public class Game {
     private static final int MAX_FRAMES = 10;
+    private static final int FIRST_FRAME = 1;
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -39,16 +36,20 @@ public class Game {
 
     @JsonIgnore
     public Frame getCurrentFrame() {
-        final Frame lastFrame = Iterables.getLast(frames, Frame.builder().num(1).game(this).build());
+        final Frame lastFrame = getLast(frames, createNewFrame(FIRST_FRAME));
 
         if (lastFrame.hasFinished()) {
-            return Frame.builder().num(lastFrame.getNum() + 1).game(this).build();
+            return createNewFrame(lastFrame.getNum() + 1);
         }
 
         return lastFrame;
     }
 
+    private Frame createNewFrame(int i) {
+        return Frame.builder().num(i).game(this).build();
+    }
+
     public boolean hasFinished() {
-        return frames.size() == MAX_FRAMES && Iterables.getLast(frames).hasFinished();
+        return frames.size() == MAX_FRAMES && getLast(frames).hasFinished();
     }
 }

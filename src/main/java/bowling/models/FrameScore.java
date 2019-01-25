@@ -5,7 +5,7 @@ import lombok.Value;
 
 @Value
 @Builder
-public class ScoreFrame {
+public class FrameScore {
     private Integer frameNumber;
     private Integer currentScore;
 }

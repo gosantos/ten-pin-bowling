@@ -3,10 +3,9 @@ package bowling.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -19,11 +18,9 @@ import javax.validation.constraints.Min;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
-@Getter
-@Setter
-@EqualsAndHashCode
-@NoArgsConstructor
+@Data
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Entity
 public class Roll {
@@ -37,6 +34,7 @@ public class Roll {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "frame_id")
+    @ToString.Exclude
     @JsonIgnore
     private Frame frame;
 }

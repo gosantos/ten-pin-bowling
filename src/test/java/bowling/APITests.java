@@ -1,5 +1,7 @@
-package bowling.controllers;
+package bowling;
 
+import bowling.controllers.BowlingController;
+import bowling.controllers.ScoreController;
 import bowling.exceptions.GameFinishedException;
 import bowling.exceptions.GameNotFoundException;
 import bowling.models.Frame;
@@ -18,12 +20,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Arrays;
 
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(controllers = BowlingController.class)
-public class BowlingControllerAPITest {
+@WebMvcTest(controllers = {BowlingController.class, ScoreController.class})
+public class APITests {
     @Autowired
     private MockMvc mockMvc;
 
@@ -80,6 +83,26 @@ public class BowlingControllerAPITest {
         given(bowlingService.newGame()).willReturn(game);
 
         mockMvc.perform(post("/games")
+                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().is2xxSuccessful());
+    }
+
+    @Test
+    public void shouldReturn4xxWhenThereIsNoScoreWithTheGivenId() throws Exception {
+        given(bowlingService.findGameById(100L)).willThrow(GameNotFoundException.class);
+
+        mockMvc.perform(get("/scores/100")
+                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    public void shouldReturn2xxWhenScoreEndpointIsHit() throws Exception {
+        final Frame frame = Frame.builder().build();
+        final Game game = Game.builder().frames(Arrays.asList(frame)).build();
+        given(bowlingService.findGameById(100L)).willReturn(game);
+
+        mockMvc.perform(get("/scores/100")
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().is2xxSuccessful());
     }

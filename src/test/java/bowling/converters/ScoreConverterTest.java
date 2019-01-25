@@ -42,7 +42,7 @@ public class ScoreConverterTest {
     public void shouldConvertWhenThereIsNoFrame() {
         final Score actualScore = scoreConverter.convert(Game.builder().id(1L).build());
 
-        final Score expectedScore = Score.builder().gameId(1L).build();
+        final Score expectedScore = Score.builder().build();
 
         assertThat(actualScore, is(expectedScore));
     }

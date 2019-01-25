@@ -15,10 +15,14 @@ import java.util.stream.Collectors;
 public class ScoreConverter implements Converter<Game, Score> {
     @Override
     public Score convert(Game game) {
-        final List<Integer> rolls = game.getFrames().stream().map(Frame::getRolls).flatMap(Collection::stream).map(Roll::getPinsHit).collect(Collectors.toList());
+        final List<Integer> rolls = game.getFrames().stream()
+                .map(Frame::getRolls)
+                .flatMap(Collection::stream)
+                .map(Roll::getPinsHit)
+                .collect(Collectors.toList());
 
         final Integer numberOfFrames = game.getFrames().size();
 
-        return Score.builder().gameId(game.getId()).numberOfFrames(numberOfFrames).rolls(rolls).build();
+        return Score.builder().numberOfFrames(numberOfFrames).rolls(rolls).build();
     }
 }

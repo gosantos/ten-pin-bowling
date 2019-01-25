@@ -1,12 +1,9 @@
 package bowling.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -16,16 +13,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
-@Getter
-@Setter
-@EqualsAndHashCode
-@NoArgsConstructor
+@Data
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Entity
 public class Frame {
@@ -50,21 +44,6 @@ public class Frame {
     @JoinColumn(name = "game_id")
     private Game game;
 
-    @JsonIgnore
-    boolean isStrike() {
-        return rolls.stream().findFirst().map(row -> row.getPinsHit().equals(MAX_PINS)).orElse(false);
-    }
-
-    @JsonIgnore
-    boolean isSpare() {
-        return !isStrike() && sumAllRolls().equals(10);
-    }
-
-    @JsonIgnore
-    boolean isBonusRoll() {
-        return (isStrike() || isSpare()) && (num == LAST_FRAME);
-    }
-
     boolean hasFinished() {
         if (isBonusRoll()) {
             return rolls.size() == 3;
@@ -73,7 +52,19 @@ public class Frame {
         return isStrike() || rolls.size() == 2;
     }
 
-    Integer sumAllRolls() {
+    private boolean isStrike() {
+        return rolls.stream().findFirst().map(row -> row.getPinsHit().equals(MAX_PINS)).orElse(false);
+    }
+
+    private boolean isSpare() {
+        return !isStrike() && sumAllRolls().equals(MAX_PINS);
+    }
+
+    private boolean isBonusRoll() {
+        return (isStrike() || isSpare()) && (num == LAST_FRAME);
+    }
+
+    private Integer sumAllRolls() {
         return rolls.stream().map(Roll::getPinsHit).reduce(MIN_PINS, Integer::sum);
     }
 }

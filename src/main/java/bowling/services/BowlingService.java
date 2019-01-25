@@ -26,10 +26,6 @@ public class BowlingService {
         return gameRepository.findById(gameId).orElseThrow(GameNotFoundException::new);
     }
 
-    public Game newGame() {
-        return gameRepository.save(Game.builder().build());
-    }
-
     public Roll updateGame(Game game, Integer pinsHit) {
         if (game.hasFinished()) {
             throw new GameFinishedException();
@@ -40,5 +36,9 @@ public class BowlingService {
         final Roll roll = Roll.builder().frame(currentFrame).pinsHit(pinsHit).build();
 
         return rollRepository.save(roll);
+    }
+
+    public Game newGame() {
+        return gameRepository.save(Game.builder().build());
     }
 }
