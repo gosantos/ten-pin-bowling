@@ -23,7 +23,7 @@ $ ./gradlew clean build
 
 $ ./gradlew bootRun
 
-$ curl https://localhost:8080/scores/1
+$ curl http://localhost:8080/scores/1
 ```
 
 ## Running the tests
