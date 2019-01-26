@@ -1,7 +1,6 @@
 package bowling.controllers;
 
 import bowling.converters.ScoreConverter;
-import bowling.models.FrameScore;
 import bowling.models.Game;
 import bowling.models.Score;
 import bowling.models.ScoreResponse;
@@ -11,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import java.util.Map;
 
 @RestController
 public class ScoreController {
@@ -30,10 +29,10 @@ public class ScoreController {
 
         final Score score = scoreConverter.convert(game);
 
-        final List<FrameScore> frameScores = score.calculateScoreByFrame();
+        final Map<Integer, Integer> scoreByFrame = score.calculateScoreByFrame();
 
         final Integer totalScore = score.calculateTotalScore();
 
-        return ScoreResponse.builder().gameId(gameId).scoreByFrame(frameScores).totalScore(totalScore).build();
+        return ScoreResponse.builder().gameId(gameId).scoreByFrame(scoreByFrame).totalScore(totalScore).build();
     }
 }

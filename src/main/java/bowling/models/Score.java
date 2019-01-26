@@ -1,10 +1,13 @@
 package bowling.models;
 
+import com.google.common.collect.Iterables;
 import lombok.Builder;
 import lombok.Data;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.google.common.collect.Iterables.get;
 import static com.google.common.collect.Iterables.getLast;
@@ -20,37 +23,42 @@ public class Score {
     @Builder.Default
     private List<Integer> rolls = new ArrayList<>();
 
-    public List<FrameScore> calculateScoreByFrame() {
+    public Integer calculateTotalScore() {
+        return getLast(calculateScoreByFrame().values(), 0);
+    }
+
+    public Map<Integer, Integer> calculateScoreByFrame() {
         int score = 0;
         int roll = 0;
 
-        List<FrameScore> frameScores = new ArrayList<>();
+        final HashMap<Integer, Integer> frameScores = new HashMap<>();
 
         for (int frameNumber = FIRST_FRAME; frameNumber <= numberOfFrames; frameNumber++) {
-            if (isStrike(roll)) {
-                score += ALL_PINS + strikeBonus(roll);
-                roll++;
-            } else if (isSpare(roll)) {
-                score += ALL_PINS + spareBonus(roll);
-                roll += 2;
-            } else {
-                score += sumOfRolls(roll);
-                roll += 2;
-            }
+            score = score + getRollScore(roll);
+            roll = incrementRollNumber(roll);
 
-            final FrameScore frameScore = FrameScore.builder().frameNumber(frameNumber).currentScore(score).build();
-            frameScores.add(frameScore);
+            frameScores.put(frameNumber, score);
         }
 
         return frameScores;
     }
 
-    public Integer calculateTotalScore() {
-        if (calculateScoreByFrame().isEmpty()) {
-            return 0;
+    private int getRollScore(int roll) {
+        if (isStrike(roll)) {
+            return ALL_PINS + strikeBonus(roll);
+        } else if (isSpare(roll)) {
+            return ALL_PINS + spareBonus(roll);
         }
 
-        return getLast(calculateScoreByFrame()).getCurrentScore();
+        return sumOfRolls(roll);
+    }
+
+    private int incrementRollNumber(int roll) {
+        if (isStrike(roll)) {
+            return roll + 1;
+        }
+
+        return roll + 2;
     }
 
     private boolean isStrike(int roll) {

@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.util.Map;
 
 @Data
 @AllArgsConstructor
@@ -13,7 +13,6 @@ import java.util.List;
 @Builder
 public class ScoreResponse {
     private Long gameId;
-    private List<FrameScore> scoreByFrame;
+    private Map<Integer, Integer> scoreByFrame;
     private int totalScore;
-
 }

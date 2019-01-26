@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.Optional;
 
 import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -54,7 +55,7 @@ public class ScoreControllerTest {
 
         given(scoreConverter.convert(game)).willReturn(Score.builder().build());
 
-        final ScoreResponse expectedScore = ScoreResponse.builder().gameId(100L).scoreByFrame(emptyList()).build();
+        final ScoreResponse expectedScore = ScoreResponse.builder().gameId(100L).scoreByFrame(emptyMap()).build();
 
         final ScoreResponse actualScore = scoreController.getScore(100L);
 
