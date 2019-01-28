@@ -17,10 +17,10 @@ public class GameTest {
     @Test
     public void shouldReturnANewFrameWhenTheCurrentOneHasFinished() {
         final Roll roll = Roll.builder().pinsHit(10).build();
-        final Frame frame = Frame.builder().rolls(Collections.singletonList(roll)).num(1).build();
+        final Frame frame = Frame.builder().rolls(Collections.singletonList(roll)).number(1).build();
         final Game game = Game.builder().frames(Collections.singletonList(frame)).build();
 
-        final Frame expectedFrame = Frame.builder().num(2).game(game).build();
+        final Frame expectedFrame = Frame.builder().number(2).game(game).build();
 
         assertThat(game.getCurrentFrame(), is(expectedFrame));
     }
@@ -32,7 +32,7 @@ public class GameTest {
         final Game game = Game.builder().frames(new ArrayList<>()).build();
 
         for (int frameNumber = FIRST_FRAME; frameNumber <= LAST_FRAME; frameNumber++) {
-            game.getFrames().add(Frame.builder().num(frameNumber).rolls(Arrays.asList(roll)).build());
+            game.getFrames().add(Frame.builder().number(frameNumber).rolls(Arrays.asList(roll)).build());
         }
 
         assertThat(game.hasFinished(), is(false));
@@ -45,10 +45,10 @@ public class GameTest {
         final Game game = Game.builder().frames(new ArrayList<>()).build();
 
         for (int frameNumber = FIRST_FRAME; frameNumber < LAST_FRAME; frameNumber++) {
-            game.getFrames().add(Frame.builder().num(frameNumber).rolls(Arrays.asList(roll)).build());
+            game.getFrames().add(Frame.builder().number(frameNumber).rolls(Arrays.asList(roll)).build());
         }
 
-        game.getFrames().add(Frame.builder().num(LAST_FRAME).rolls(Arrays.asList(roll, roll)).build());
+        game.getFrames().add(Frame.builder().number(LAST_FRAME).rolls(Arrays.asList(roll, roll)).build());
 
         assertThat(game.hasFinished(), is(false));
     }
@@ -60,7 +60,7 @@ public class GameTest {
         final Game game = Game.builder().frames(new ArrayList<>()).build();
 
         for (int frameNumber = FIRST_FRAME; frameNumber <= LAST_FRAME; frameNumber++) {
-            game.getFrames().add(Frame.builder().num(frameNumber).rolls(Arrays.asList(roll)).build());
+            game.getFrames().add(Frame.builder().number(frameNumber).rolls(Arrays.asList(roll)).build());
         }
 
         assertThat(game.hasFinished(), is(false));
@@ -73,13 +73,13 @@ public class GameTest {
         final Game game = Game.builder().frames(new ArrayList<>()).build();
 
         for (int frameNumber = FIRST_FRAME; frameNumber < LAST_FRAME; frameNumber++) {
-            game.getFrames().add(Frame.builder().num(frameNumber).rolls(Arrays.asList(roll)).build());
+            game.getFrames().add(Frame.builder().number(frameNumber).rolls(Arrays.asList(roll)).build());
         }
 
         final Roll roll2 = Roll.builder().pinsHit(5).build();
         final Roll roll3 = Roll.builder().pinsHit(5).build();
 
-        game.getFrames().add(Frame.builder().num(LAST_FRAME).rolls(Arrays.asList(roll2, roll3)).build());
+        game.getFrames().add(Frame.builder().number(LAST_FRAME).rolls(Arrays.asList(roll2, roll3)).build());
 
         assertThat(game.hasFinished(), is(false));
     }
@@ -92,11 +92,11 @@ public class GameTest {
         final Game game = Game.builder().frames(new ArrayList<>()).build();
 
         for (int frameNumber = FIRST_FRAME; frameNumber < LAST_FRAME; frameNumber++) {
-            game.getFrames().add(Frame.builder().num(frameNumber).rolls(Arrays.asList(roll)).build());
+            game.getFrames().add(Frame.builder().number(frameNumber).rolls(Arrays.asList(roll)).build());
         }
 
         final Roll roll2 = Roll.builder().pinsHit(5).build();
-        game.getFrames().add(Frame.builder().num(LAST_FRAME).rolls(Arrays.asList(roll2)).build());
+        game.getFrames().add(Frame.builder().number(LAST_FRAME).rolls(Arrays.asList(roll2)).build());
 
         assertThat(game.hasFinished(), is(false));
     }
@@ -107,12 +107,12 @@ public class GameTest {
         final Game game = Game.builder().frames(new ArrayList<>()).build();
 
         for (int frameNumber = FIRST_FRAME; frameNumber < LAST_FRAME; frameNumber++) {
-            game.getFrames().add(Frame.builder().num(frameNumber).rolls(Arrays.asList(roll1)).build());
+            game.getFrames().add(Frame.builder().number(frameNumber).rolls(Arrays.asList(roll1)).build());
         }
 
         final Roll roll2 = Roll.builder().pinsHit(3).build();
         final Roll roll3 = Roll.builder().pinsHit(3).build();
-        final Frame frame2 = Frame.builder().num(LAST_FRAME).rolls(Arrays.asList(roll2, roll3)).build();
+        final Frame frame2 = Frame.builder().number(LAST_FRAME).rolls(Arrays.asList(roll2, roll3)).build();
 
         game.getFrames().add(frame2);
 
@@ -125,7 +125,7 @@ public class GameTest {
         final Game game = Game.builder().frames(new ArrayList<>()).build();
 
         for (int frameNumber = FIRST_FRAME; frameNumber < LAST_FRAME; frameNumber++) {
-            game.getFrames().add(Frame.builder().num(frameNumber).rolls(Arrays.asList(roll1)).build());
+            game.getFrames().add(Frame.builder().number(frameNumber).rolls(Arrays.asList(roll1)).build());
         }
 
         assertThat(game.hasFinished(), is(false));

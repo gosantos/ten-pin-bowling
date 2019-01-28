@@ -34,7 +34,7 @@ public class Frame {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    private int num;
+    private int number;
 
     @OneToMany(mappedBy = "frame")
     @Builder.Default
@@ -61,7 +61,7 @@ public class Frame {
     }
 
     private boolean isBonusRoll() {
-        return (isStrike() || isSpare()) && (num == LAST_FRAME);
+        return (isStrike() || isSpare()) && (number == LAST_FRAME);
     }
 
     private Integer sumAllRolls() {

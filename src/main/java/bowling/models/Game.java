@@ -39,14 +39,14 @@ public class Game {
         final Frame lastFrame = getLast(frames, createNewFrame(FIRST_FRAME));
 
         if (lastFrame.hasFinished()) {
-            return createNewFrame(lastFrame.getNum() + 1);
+            return createNewFrame(lastFrame.getNumber() + 1);
         }
 
         return lastFrame;
     }
 
-    private Frame createNewFrame(int i) {
-        return Frame.builder().num(i).game(this).build();
+    private Frame createNewFrame(int frameNumber) {
+        return Frame.builder().number(frameNumber).game(this).build();
     }
 
     public boolean hasFinished() {

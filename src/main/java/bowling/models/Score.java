@@ -29,13 +29,13 @@ public class Score {
 
     public Map<Integer, Integer> calculateScoreByFrame() {
         int score = 0;
-        int roll = 0;
+        int rollNumber = 0;
 
         final HashMap<Integer, Integer> frameScores = new HashMap<>();
 
         for (int frameNumber = FIRST_FRAME; frameNumber <= numberOfFrames; frameNumber++) {
-            score = score + getRollScore(roll);
-            roll = incrementRollNumber(roll);
+            score = score + getRollScore(rollNumber);
+            rollNumber = incrementRollNumber(rollNumber);
 
             frameScores.put(frameNumber, score);
         }
@@ -43,42 +43,42 @@ public class Score {
         return frameScores;
     }
 
-    private int getRollScore(int roll) {
-        if (isStrike(roll)) {
-            return ALL_PINS + strikeBonus(roll);
-        } else if (isSpare(roll)) {
-            return ALL_PINS + spareBonus(roll);
+    private int getRollScore(int rollNumber) {
+        if (isStrike(rollNumber)) {
+            return ALL_PINS + strikeBonus(rollNumber);
+        } else if (isSpare(rollNumber)) {
+            return ALL_PINS + spareBonus(rollNumber);
         }
 
-        return sumOfRolls(roll);
+        return sumOfRolls(rollNumber);
     }
 
-    private int incrementRollNumber(int roll) {
-        if (isStrike(roll)) {
-            return roll + 1;
+    private int incrementRollNumber(int rollNumber) {
+        if (isStrike(rollNumber)) {
+            return rollNumber + 1;
         }
 
-        return roll + 2;
+        return rollNumber + 2;
     }
 
-    private boolean isStrike(int roll) {
-        return get(rolls, roll, 0) == ALL_PINS;
+    private boolean isStrike(int rollNumber) {
+        return get(rolls, rollNumber, 0) == ALL_PINS;
     }
 
-    private boolean isSpare(int roll) {
-        return sumOfRolls(roll) == ALL_PINS;
+    private boolean isSpare(int rollNumber) {
+        return sumOfRolls(rollNumber) == ALL_PINS;
     }
 
-    private int strikeBonus(int roll) {
-        return sumOfRolls(roll + 1);
+    private int strikeBonus(int rollNumber) {
+        return sumOfRolls(rollNumber + 1);
     }
 
-    private int spareBonus(int roll) {
-        return get(rolls, roll + 2, 0);
+    private int spareBonus(int rollNumber) {
+        return get(rolls, rollNumber + 2, 0);
     }
 
-    private int sumOfRolls(int roll) {
-        return get(rolls, roll, 0) + get(rolls, roll + 1, 0);
+    private int sumOfRolls(int rollNumber) {
+        return get(rolls, rollNumber, 0) + get(rolls, rollNumber + 1, 0);
     }
 }
 

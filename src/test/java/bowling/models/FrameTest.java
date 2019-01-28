@@ -1,9 +1,7 @@
 package bowling.models;
 
 import org.junit.Test;
-import org.springframework.util.ReflectionUtils;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -17,7 +15,7 @@ public class FrameTest {
         final Roll roll1 = Roll.builder().pinsHit(7).build();
         final Roll roll2 = Roll.builder().pinsHit(1).build();
         final List<Roll> rolls = Arrays.asList(roll1, roll2);
-        final Frame frame = Frame.builder().rolls(rolls).num(1).build();
+        final Frame frame = Frame.builder().rolls(rolls).number(1).build();
 
         assertThat(frame.hasFinished(), is(true));
     }
@@ -26,7 +24,7 @@ public class FrameTest {
     public void shouldBeFinishedWhenIsAStrike() {
         final Roll roll1 = Roll.builder().pinsHit(10).build();
         final List<Roll> rolls = Arrays.asList(roll1);
-        final Frame frame = Frame.builder().rolls(rolls).num(1).build();
+        final Frame frame = Frame.builder().rolls(rolls).number(1).build();
 
         assertThat(frame.hasFinished(), is(true));
     }
@@ -35,7 +33,7 @@ public class FrameTest {
     public void shouldNotBeFinishedWhenIsAStrikeOnTheBonusRoll() {
         final Roll roll1 = Roll.builder().pinsHit(10).build();
         final List<Roll> rolls = Arrays.asList(roll1);
-        final Frame frame = Frame.builder().num(10).rolls(rolls).build();
+        final Frame frame = Frame.builder().number(10).rolls(rolls).build();
 
         assertThat(frame.hasFinished(), is(false));
     }
@@ -45,7 +43,7 @@ public class FrameTest {
         final Roll roll1 = Roll.builder().pinsHit(10).build();
         final Roll roll2 = Roll.builder().pinsHit(10).build();
         final List<Roll> rolls = Arrays.asList(roll1, roll2);
-        final Frame frame = Frame.builder().num(10).rolls(rolls).build();
+        final Frame frame = Frame.builder().number(10).rolls(rolls).build();
 
         assertThat(frame.hasFinished(), is(false));
     }
@@ -55,7 +53,7 @@ public class FrameTest {
         final Roll roll1 = Roll.builder().pinsHit(8).build();
         final Roll roll2 = Roll.builder().pinsHit(2).build();
         final List<Roll> rolls = Arrays.asList(roll1, roll2);
-        final Frame frame = Frame.builder().num(10).rolls(rolls).build();
+        final Frame frame = Frame.builder().number(10).rolls(rolls).build();
 
         assertThat(frame.hasFinished(), is(false));
     }
@@ -65,7 +63,7 @@ public class FrameTest {
         final Roll roll1 = Roll.builder().pinsHit(7).build();
         final Roll roll2 = Roll.builder().pinsHit(2).build();
         final List<Roll> rolls = Arrays.asList(roll1, roll2);
-        final Frame frame = Frame.builder().num(10).rolls(rolls).build();
+        final Frame frame = Frame.builder().number(10).rolls(rolls).build();
 
         assertThat(frame.hasFinished(), is(true));
     }
